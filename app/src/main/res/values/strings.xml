@@ -7,4 +7,8 @@
     <string name="delete_action">Delete Action</string>
     <string name="delete_all">Delete All</string>
     <string name="tasks">Tasks</string>
+
+    <string name="search_icon">Search Icon</string>
+    <string name="close_icon">Close Icon</string>
+    <string name="search_placeholder">Search</string>
 </resources>
