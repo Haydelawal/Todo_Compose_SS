@@ -38,7 +38,6 @@ fun TaskScreen(
                             displayAlertDialog(context = context)
                         }
                     }
-
                 }
             )
         },
@@ -77,3 +76,4 @@ fun displayAlertDialog(context: Context){
 
     builder.create().show()
 }
+
