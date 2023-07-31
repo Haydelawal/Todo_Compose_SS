@@ -1,5 +1,6 @@
 package com.example.todo_compose_ss.navigation.destinations
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,6 +15,7 @@ import com.example.todo_compose_ss.utils.Constants
 import com.example.todo_compose_ss.utils.Constants.TASK_ARGUMENT_KEY
 import com.example.todo_compose_ss.utils.Constants.TASK_SCREEN
 
+@SuppressLint("SuspiciousIndentation")
 fun NavGraphBuilder.taskComposable(
     mySharedViewModel: MySharedViewModel,
     navigateToListScreen: (Action) -> Unit
