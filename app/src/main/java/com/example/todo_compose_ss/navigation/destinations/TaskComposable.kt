@@ -31,6 +31,7 @@ fun NavGraphBuilder.taskComposable(
         val selectedTask by mySharedViewModel.selectedTask.collectAsState()
 
         LaunchedEffect(key1 = selectedTask) {
+            // remember to add this to check and undo deleted task
             if (selectedTask != null || taskId == -1)
             mySharedViewModel.updateTaskFields(selectedTask = selectedTask)
         }
