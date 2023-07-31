@@ -124,7 +124,7 @@ class MySharedViewModel @Inject constructor(
                 updateTask()
             }
             Action.UNDO -> {
-
+                addTask()
             }
             Action.DELETE -> {
                 deleteTask()

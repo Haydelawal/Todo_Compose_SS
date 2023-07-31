@@ -22,7 +22,7 @@ fun ListScreen(
 
 ) {
 
-    LaunchedEffect(key1 = true){
+    LaunchedEffect(key1 = true) {
         mySharedViewModel.getAllTasks()
     }
 
@@ -36,8 +36,12 @@ fun ListScreen(
 
     DisplaySnackBar(
         scaffoldState = scaffoldState,
-        handleDatabaseActions = { mySharedViewModel.handleDatabaseAction(action= action) },
-        taskTitle = mySharedViewModel.title.value,
+        handleDatabaseActions = { mySharedViewModel.handleDatabaseAction(action = action) },
+        onUndoClicked= {
+                       mySharedViewModel.action.value = it
+        },
+
+    taskTitle = mySharedViewModel.title.value,
         action = action
     )
 
@@ -84,6 +88,7 @@ fun ListFab(
 private fun DisplaySnackBar(
     scaffoldState: ScaffoldState,
     handleDatabaseActions: () -> Unit,
+    onUndoClicked: (Action) -> Unit,
     taskTitle: String,
     action: Action
 ) {
@@ -91,16 +96,43 @@ private fun DisplaySnackBar(
     handleDatabaseActions()
 
     val scope = rememberCoroutineScope()
-    LaunchedEffect(key1 = action){
+    LaunchedEffect(key1 = action) {
         if (action != Action.NO_ACTION) {
             scope.launch {
                 val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
                     message = "${action.name}: $taskTitle",
-                    actionLabel = "OKAY"
+                    actionLabel = setActionLabel(action = action)
+                )
+
+                undoDeletedTask(
+                    action = action,
+                    snackBarResult= snackbarResult,
+                    onUndoClicked = onUndoClicked
                 )
             }
         }
     }
 
+}
 
+private fun setActionLabel(action: Action): String {
+
+    return if (action.name == "DELETE") {
+        "UNDO"
+    } else {
+        "OKAY"
+    }
+}
+
+private fun undoDeletedTask(
+    action: Action,
+    snackBarResult: SnackbarResult,
+    onUndoClicked: (Action) -> Unit
+) {
+
+    if (snackBarResult == SnackbarResult.ActionPerformed
+        && action == Action.DELETE
+    ) {
+        onUndoClicked(Action.UNDO)
+    }
 }
