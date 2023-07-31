@@ -7,7 +7,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.example.todo_compose_ss.R
 import com.example.todo_compose_ss.ui.theme.fabBackgroundColor
 import com.example.todo_compose_ss.ui.viewmodel.MySharedViewModel
@@ -28,6 +27,7 @@ fun ListScreen(
 
     val action by mySharedViewModel.action
     val allTasks by mySharedViewModel.allTasks.collectAsState()
+    val searchedTasks by mySharedViewModel.searchedTasks.collectAsState()
 
     val searchAppBarState: SearchAppBarState by mySharedViewModel.searchAppBarState
     val searchTextState: String by mySharedViewModel.searchTextState
@@ -55,7 +55,7 @@ fun ListScreen(
             )
         },
         content = {
-            ListContent(tasks = allTasks, navigateToTaskScreen = navigateToTaskScreen)
+            ListContent(allTasks = allTasks, navigateToTaskScreen = navigateToTaskScreen, searchAppBarState = searchAppBarState, searchedTasks = searchedTasks)
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)

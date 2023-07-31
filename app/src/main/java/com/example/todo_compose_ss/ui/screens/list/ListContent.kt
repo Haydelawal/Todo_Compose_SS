@@ -18,6 +18,7 @@ import com.example.todo_compose_ss.data.models.TodoTask
 import com.example.todo_compose_ss.ui.screens.list.EmptyContent
 import com.example.todo_compose_ss.ui.theme.*
 import com.example.todo_compose_ss.utils.RequestState
+import com.example.todo_compose_ss.utils.SearchAppBarState
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -25,21 +26,40 @@ import com.example.todo_compose_ss.utils.RequestState
 @Composable
 fun ListContent(
 
-    tasks: RequestState<List<TodoTask>>,
-    navigateToTaskScreen: (task: Int) -> Unit
+    allTasks: RequestState<List<TodoTask>>,
+    searchedTasks: RequestState<List<TodoTask>>,
+    navigateToTaskScreen: (task: Int) -> Unit,
+    searchAppBarState: SearchAppBarState
 ) {
 
-    if(tasks is RequestState.Success){
-        if (tasks.data.isEmpty()) {
-            EmptyContent()
-        } else {
-            DisplayTasks(
-                tasks = tasks.data,
+    if (searchAppBarState == SearchAppBarState.TRIGGERED) {
+        if (searchedTasks is RequestState.Success) {
+            HandleListContent(
+                tasks = searchedTasks.data,
                 navigateToTaskScreen = navigateToTaskScreen
             )
         }
+    } else {
+        if (allTasks is RequestState.Success) {
+            HandleListContent(tasks = allTasks.data, navigateToTaskScreen = navigateToTaskScreen)
+        }
     }
 
+}
+
+@Composable
+fun HandleListContent(
+    tasks: List<TodoTask>,
+    navigateToTaskScreen: (task: Int) -> Unit
+) {
+    if (tasks.isEmpty()) {
+        EmptyContent()
+    } else {
+        DisplayTasks(
+            tasks = tasks,
+            navigateToTaskScreen = navigateToTaskScreen
+        )
+    }
 }
 
 @Composable
