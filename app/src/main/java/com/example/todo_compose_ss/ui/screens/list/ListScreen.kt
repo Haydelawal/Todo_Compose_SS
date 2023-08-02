@@ -99,14 +99,14 @@ private fun DisplaySnackBar(
     LaunchedEffect(key1 = action) {
         if (action != Action.NO_ACTION) {
             scope.launch {
-                val snackbarResult = scaffoldState.snackbarHostState.showSnackbar(
+                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
                     message = setSnackBarMessage(action= action, taskTitle = taskTitle),
                     actionLabel = setActionLabel(action = action)
                 )
 
                 undoDeletedTask(
                     action = action,
-                    snackBarResult= snackbarResult,
+                    snackBarResult= snackBarResult,
                     onUndoClicked = onUndoClicked
                 )
             }
