@@ -1,25 +1,20 @@
 package com.example.todo_compose_ss.ui.viewmodel
 
-import android.content.Context
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todo_compose_ss.data.models.Priority
 import com.example.todo_compose_ss.data.models.TodoTask
+import com.example.todo_compose_ss.data.repositories.DataStoreRepository
 import com.example.todo_compose_ss.data.repositories.TodoRepository
-import com.example.todo_compose_ss.ui.screens.task.displayAlertDialog
 import com.example.todo_compose_ss.utils.Action
 import com.example.todo_compose_ss.utils.Constants.MAX_TITLE_LENGTH
 import com.example.todo_compose_ss.utils.RequestState
 import com.example.todo_compose_ss.utils.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MySharedViewModel @Inject constructor(
     private val repository: TodoRepository,
-
-    @ApplicationContext val context: Context
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
@@ -53,23 +47,43 @@ class MySharedViewModel @Inject constructor(
         MutableStateFlow<RequestState<List<TodoTask>>>(RequestState.Idle)
     val searchedTasks: StateFlow<RequestState<List<TodoTask>>> = _searchTasks
 
+    val lowPriorityTasks: StateFlow<List<TodoTask>> = repository.sortByLowPriority.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        emptyList()
+    )
 
-    fun searchDatabase(searchQuery: String) {
-        _searchTasks.value = RequestState.Loading
+    val highPriorityTasks: StateFlow<List<TodoTask>> = repository.sortByHighPriority.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        emptyList()
+    )
+
+    private val _sortState = MutableStateFlow<RequestState<Priority>>(RequestState.Idle)
+    val sortState: StateFlow<RequestState<Priority>> = _sortState
+
+    fun readSortState() {
+        _sortState.value = RequestState.Loading
         try {
             viewModelScope.launch {
-                repository.searchDatabase(searchQuery = "%$searchQuery%")
-                    .collect {  searchedTasks ->
-                        _searchTasks.value =  RequestState.Success(searchedTasks)
+                dataStoreRepository.readSortState
+                    .map {
+                        Priority.valueOf(it)
+                    }
+                    .collect {
+                        _sortState.value = RequestState.Success(it)
                     }
             }
         } catch (e: Exception) {
-            _searchTasks.value = RequestState.Error(e)
+            _sortState.value = RequestState.Error(e)
         }
-
-        searchAppBarState.value = SearchAppBarState.TRIGGERED
     }
 
+    fun persistSortingState(priority: Priority) {
+        viewModelScope.launch(Dispatchers.IO) {
+            dataStoreRepository.persistSortState(priority = priority)
+        }
+    }
 
     fun getAllTasks() {
         _allTasks.value = RequestState.Loading
@@ -124,6 +138,7 @@ class MySharedViewModel @Inject constructor(
             repository.updateTask(todoTask = todoTask)
         }
     }
+
     private fun deleteTask() {
         viewModelScope.launch(Dispatchers.IO) {
 
@@ -142,6 +157,22 @@ class MySharedViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             repository.deleteAllTasks()
         }
+    }
+
+    fun searchDatabase(searchQuery: String) {
+        _searchTasks.value = RequestState.Loading
+        try {
+            viewModelScope.launch {
+                repository.searchDatabase(searchQuery = "%$searchQuery%")
+                    .collect { searchedTasks ->
+                        _searchTasks.value = RequestState.Success(searchedTasks)
+                    }
+            }
+        } catch (e: Exception) {
+            _searchTasks.value = RequestState.Error(e)
+        }
+
+        searchAppBarState.value = SearchAppBarState.TRIGGERED
     }
 
     fun handleDatabaseAction(action: Action) {

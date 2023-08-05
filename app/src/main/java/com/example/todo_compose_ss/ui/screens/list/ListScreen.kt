@@ -23,11 +23,17 @@ fun ListScreen(
 
     LaunchedEffect(key1 = true) {
         mySharedViewModel.getAllTasks()
+        mySharedViewModel.readSortState()
     }
 
     val action by mySharedViewModel.action
     val allTasks by mySharedViewModel.allTasks.collectAsState()
     val searchedTasks by mySharedViewModel.searchedTasks.collectAsState()
+
+    val sortState by mySharedViewModel.sortState.collectAsState()
+    val lowPriorityTasks by mySharedViewModel.lowPriorityTasks.collectAsState()
+    val highPriorityTasks by mySharedViewModel.highPriorityTasks.collectAsState()
+
 
     val searchAppBarState: SearchAppBarState by mySharedViewModel.searchAppBarState
     val searchTextState: String by mySharedViewModel.searchTextState
@@ -37,11 +43,11 @@ fun ListScreen(
     DisplaySnackBar(
         scaffoldState = scaffoldState,
         handleDatabaseActions = { mySharedViewModel.handleDatabaseAction(action = action) },
-        onUndoClicked= {
-                       mySharedViewModel.action.value = it
+        onUndoClicked = {
+            mySharedViewModel.action.value = it
         },
 
-    taskTitle = mySharedViewModel.title.value,
+        taskTitle = mySharedViewModel.title.value,
         action = action
     )
 
@@ -55,7 +61,17 @@ fun ListScreen(
             )
         },
         content = {
-            ListContent(allTasks = allTasks, navigateToTaskScreen = navigateToTaskScreen, searchAppBarState = searchAppBarState, searchedTasks = searchedTasks)
+            ListContent(
+                allTasks = allTasks,
+                navigateToTaskScreen = navigateToTaskScreen,
+
+                lowPriorityTasks = lowPriorityTasks,
+                highPriorityTasks = highPriorityTasks,
+                sortState = sortState,
+
+                searchAppBarState = searchAppBarState,
+                searchedTasks = searchedTasks
+            )
         },
         floatingActionButton = {
             ListFab(onFabClicked = navigateToTaskScreen)
@@ -100,13 +116,13 @@ private fun DisplaySnackBar(
         if (action != Action.NO_ACTION) {
             scope.launch {
                 val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = setSnackBarMessage(action= action, taskTitle = taskTitle),
+                    message = setSnackBarMessage(action = action, taskTitle = taskTitle),
                     actionLabel = setActionLabel(action = action)
                 )
 
                 undoDeletedTask(
                     action = action,
-                    snackBarResult= snackBarResult,
+                    snackBarResult = snackBarResult,
                     onUndoClicked = onUndoClicked
                 )
             }
