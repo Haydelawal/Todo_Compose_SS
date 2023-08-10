@@ -1,10 +1,11 @@
 package com.example.todo_compose_ss.navigation.destinations
 
 import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
-import androidx.navigation.compose.composable
+import com.google.accompanist.navigation.animation.composable
 import androidx.navigation.compose.navArgument
 import com.example.todo_compose_ss.ui.screens.list.ListScreen
 import com.example.todo_compose_ss.ui.viewmodel.MySharedViewModel
@@ -12,6 +13,7 @@ import com.example.todo_compose_ss.utils.Constants.LIST_ARGUMENT_KEY
 import com.example.todo_compose_ss.utils.Constants.LIST_SCREEN
 import com.example.todo_compose_ss.utils.toAction
 
+@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.listComposable(
     navigateToTaskScreen: (taskId: Int) -> Unit,
     mySharedViewModel: MySharedViewModel
