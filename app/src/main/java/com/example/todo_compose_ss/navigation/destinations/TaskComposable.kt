@@ -32,16 +32,6 @@ fun NavGraphBuilder.taskComposable(
             mySharedViewModel.getSelectedTask(taskId = taskId)
         }
 
-        // COMMIT ME
-        // COMMIT ME
-        // COMMIT ME
-        // COMMIT ME
-        // COMMIT ME
-        // COMMIT ME
-        // COMMIT ME
-        // COMMIT ME
-        // COMMIT ME
-
         val selectedTask by mySharedViewModel.selectedTask.collectAsState()
 
         LaunchedEffect(key1 = selectedTask) {
