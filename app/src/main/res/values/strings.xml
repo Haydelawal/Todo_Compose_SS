@@ -23,6 +23,7 @@
 
     <string name="title">Title</string>
     <string name="description">Description</string>
+  <string name="to_do_logo">To Do Logo</string>
 
 
     <string name="drop_down_arrow">Drop-Down Arrow Icon</string>
