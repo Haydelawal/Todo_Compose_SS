@@ -3,9 +3,11 @@ package com.example.todo_compose_ss.ui.screens.task
 import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.material.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import com.example.todo_compose_ss.data.models.Priority
 import com.example.todo_compose_ss.data.models.TodoTask
@@ -23,6 +25,8 @@ fun TaskScreen(
     val priority: Priority by mySharedViewModel.priority
 
     val context = LocalContext.current
+
+    BackHandler(onBackPressed = {navigateToListScreen(Action.NO_ACTION)})
 
     Scaffold(
         topBar = {
@@ -75,5 +79,29 @@ fun displayAlertDialog(context: Context){
     builder.setMessage("Input Field Can Not Be Empty")
 
     builder.create().show()
+}
+
+@Composable
+fun BackHandler(
+    backDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher,
+    onBackPressed: () -> Unit
+){
+    val currentOnBackPressed by rememberUpdatedState(newValue = onBackPressed)
+
+    val backCallback = remember {
+        object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                currentOnBackPressed()
+            }
+        }
+    }
+
+    DisposableEffect(key1 = backDispatcher){
+        backDispatcher?.addCallback(backCallback)
+
+        onDispose {
+            backCallback.remove()
+        }
+    }
 }
 
