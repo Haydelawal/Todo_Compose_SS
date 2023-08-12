@@ -9,7 +9,8 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
+//import androidx.navigation.compose.navArgument
+import androidx.navigation.navArgument
 import com.example.todo_compose_ss.ui.screens.list.ListScreen
 import com.example.todo_compose_ss.ui.viewmodel.MySharedViewModel
 import com.example.todo_compose_ss.utils.Action
@@ -38,12 +39,12 @@ fun NavGraphBuilder.listComposable(
 
             if (action != myAction) {
                 myAction = action
-                mySharedViewModel.action.value = action
+                mySharedViewModel.updateAction(newAction = action)
             }
 
         }
 
-        val databaseAction by mySharedViewModel.action
+        val databaseAction = mySharedViewModel.action
 
 //        Log.d("ListComposable", action.name)
 

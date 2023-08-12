@@ -8,11 +8,11 @@ import com.example.todo_compose_ss.utils.Constants.SPLASH_SCREEN
 
 class Screens(navController: NavHostController) {
 
-    val splash: () -> Unit = {
-        navController.navigate(route = "list/${Action.NO_ACTION}"){
-            popUpTo(SPLASH_SCREEN){inclusive = true}
-        }
-    }
+//    val splash: () -> Unit = {
+//        navController.navigate(route = "list/${Action.NO_ACTION}"){
+//            popUpTo(SPLASH_SCREEN){inclusive = true}
+//        }
+//    }
 
     val list: (Int) -> Unit = {taskId ->
         navController.navigate("task/$taskId")

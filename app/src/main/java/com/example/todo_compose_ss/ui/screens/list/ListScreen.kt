@@ -27,8 +27,8 @@ fun ListScreen(
 //        mySharedViewModel.readSortState()
 //    }
 
-    LaunchedEffect(key1 = action){
-        mySharedViewModel.handleDatabaseAction(action= action)
+    LaunchedEffect(key1 = action) {
+        mySharedViewModel.handleDatabaseActions(action = action)
     }
 
 //    val action by mySharedViewModel.action
@@ -41,20 +41,20 @@ fun ListScreen(
     val highPriorityTasks by mySharedViewModel.highPriorityTasks.collectAsState()
 
 
-    val searchAppBarState: SearchAppBarState by mySharedViewModel.searchAppBarState
-    val searchTextState: String by mySharedViewModel.searchTextState
+    val searchAppBarState: SearchAppBarState = mySharedViewModel.searchAppBarState
+    val searchTextState: String = mySharedViewModel.searchTextState
 
     val scaffoldState = rememberScaffoldState()
 
     DisplaySnackBar(
         scaffoldState = scaffoldState,
 //        handleDatabaseActions = { mySharedViewModel.handleDatabaseAction(action = action) },
-        onComplete = {mySharedViewModel.action.value = it},
+        onComplete = { mySharedViewModel.updateAction(newAction = it) },
         onUndoClicked = {
-            mySharedViewModel.action.value = it
+            mySharedViewModel.updateAction(newAction = it)
         },
 
-        taskTitle = mySharedViewModel.title.value,
+        taskTitle = mySharedViewModel.title,
         action = action
     )
 
@@ -76,7 +76,8 @@ fun ListScreen(
                 highPriorityTasks = highPriorityTasks,
                 sortState = sortState,
                 onSwipeToDelete = { action, todoTask ->
-                    mySharedViewModel.action.value = action
+//                    mySharedViewModel.action.value = action
+                    mySharedViewModel.updateAction(newAction = action)
                     mySharedViewModel.updateTaskFields(selectedTask = todoTask)
                     scaffoldState.snackbarHostState.currentSnackbarData?.dismiss()
                 },

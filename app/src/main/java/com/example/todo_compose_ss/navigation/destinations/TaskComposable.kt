@@ -1,13 +1,15 @@
 package com.example.todo_compose_ss.navigation.destinations
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navArgument
+import androidx.navigation.navArgument
 import com.example.todo_compose_ss.ui.screens.task.TaskScreen
 import com.example.todo_compose_ss.ui.viewmodel.MySharedViewModel
 import com.example.todo_compose_ss.utils.Action
@@ -25,6 +27,15 @@ fun NavGraphBuilder.taskComposable(
         arguments = listOf(navArgument(TASK_ARGUMENT_KEY) {
             type = NavType.IntType
         })
+//        ,
+//        enterTransition = {
+//            slideInHorizontally(
+//                initialOffsetX = { fullWidth -> -fullWidth },
+//                animationSpec = tween(
+//                    durationMillis = 300
+//                )
+//            )
+//        }
     ) { navBackStackEntry ->
         val taskId = navBackStackEntry.arguments!!.getInt(TASK_ARGUMENT_KEY)
 
