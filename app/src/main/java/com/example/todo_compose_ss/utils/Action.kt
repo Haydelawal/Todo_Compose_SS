@@ -13,6 +13,7 @@ enum class Action {
 
 fun String?.toAction(): Action {
 
+/*
     return when {
         this == "ADD" -> {
             Action.ADD
@@ -34,5 +35,7 @@ fun String?.toAction(): Action {
         }
 
     }
+*/
 
+    return if (this.isNullOrEmpty()) Action.NO_ACTION else Action.valueOf(this)
 }

@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.todo_compose_ss.R
 import com.example.todo_compose_ss.ui.theme.LOGO_HEIGHT
@@ -47,6 +48,13 @@ fun SplashScreen(
         delay(SPLASH_SCREEN_DELAY)
         navigateToListScreen()
     }
+
+    Splash(offsetState = offsetState, alphaState = alphaState)
+}
+
+@Composable
+fun Splash(offsetState: Dp, alphaState: Float) {
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -56,13 +64,15 @@ fun SplashScreen(
     {
 
         Image(
-            modifier = Modifier.size(LOGO_HEIGHT)
+            modifier = Modifier
+                .size(LOGO_HEIGHT)
                 .offset(y = offsetState)
                 .alpha(alpha = alphaState),
             painter = painterResource(id = getLogo()),
             contentDescription = stringResource(id = R.string.to_do_logo)
         )
     }
+
 }
 
 
@@ -79,9 +89,7 @@ fun getLogo(): Int {
 @Composable
 @Preview
 private fun SplashScreenPreview() {
-    SplashScreen(
-        navigateToListScreen = {}
-    )
+    Splash(offsetState = 0.dp, alphaState = 1f)
 }
 
 // dark theme preview
@@ -89,8 +97,6 @@ private fun SplashScreenPreview() {
 @Preview
 private fun DarkSplashScreenPreview() {
     Todo_Compose_SSTheme(darkTheme = true) {
-        SplashScreen(
-            navigateToListScreen = {}
-        )
+        Splash(offsetState = 0.dp, alphaState = 1f)
     }
 }
