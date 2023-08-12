@@ -3,6 +3,9 @@ package com.example.todo_compose_ss.navigation.destinations
 import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -27,8 +30,17 @@ fun NavGraphBuilder.listComposable(
 
         val action = navBackStackEntry.arguments?.getString(LIST_ARGUMENT_KEY).toAction()
 
-        LaunchedEffect(key1 = action ){
-            mySharedViewModel.action.value = action
+        var myAction by rememberSaveable {
+            mutableStateOf(Action.NO_ACTION)
+        }
+
+        LaunchedEffect(key1 = myAction ){
+
+            if (action != myAction) {
+                myAction = action
+                mySharedViewModel.action.value = action
+            }
+
         }
 
         val databaseAction by mySharedViewModel.action

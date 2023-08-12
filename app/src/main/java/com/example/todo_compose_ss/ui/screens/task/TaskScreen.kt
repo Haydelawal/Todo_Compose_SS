@@ -5,6 +5,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.*
@@ -26,7 +27,11 @@ fun TaskScreen(
 
     val context = LocalContext.current
 
-    BackHandler(onBackPressed = {navigateToListScreen(Action.NO_ACTION)})
+//    BackHandler(onBackPressed = {navigateToListScreen(Action.NO_ACTION)})
+
+    BackHandler {
+        navigateToListScreen(Action.NO_ACTION)
+    }
 
     Scaffold(
         topBar = {
@@ -81,27 +86,27 @@ fun displayAlertDialog(context: Context){
     builder.create().show()
 }
 
-@Composable
-fun BackHandler(
-    backDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher,
-    onBackPressed: () -> Unit
-){
-    val currentOnBackPressed by rememberUpdatedState(newValue = onBackPressed)
-
-    val backCallback = remember {
-        object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                currentOnBackPressed()
-            }
-        }
-    }
-
-    DisposableEffect(key1 = backDispatcher){
-        backDispatcher?.addCallback(backCallback)
-
-        onDispose {
-            backCallback.remove()
-        }
-    }
-}
+//@Composable
+//fun BackHandler(
+//    backDispatcher: OnBackPressedDispatcher? = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher,
+//    onBackPressed: () -> Unit
+//){
+//    val currentOnBackPressed by rememberUpdatedState(newValue = onBackPressed)
+//
+//    val backCallback = remember {
+//        object : OnBackPressedCallback(true){
+//            override fun handleOnBackPressed() {
+//                currentOnBackPressed()
+//            }
+//        }
+//    }
+//
+//    DisposableEffect(key1 = backDispatcher){
+//        backDispatcher?.addCallback(backCallback)
+//
+//        onDispose {
+//            backCallback.remove()
+//        }
+//    }
+//}
 

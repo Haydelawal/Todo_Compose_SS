@@ -27,7 +27,7 @@ import com.example.todo_compose_ss.ui.theme.*
 import com.example.todo_compose_ss.ui.viewmodel.MySharedViewModel
 import com.example.todo_compose_ss.utils.Action
 import com.example.todo_compose_ss.utils.SearchAppBarState
-import com.example.todo_compose_ss.utils.TrailingIconState
+//import com.example.todo_compose_ss.utils.TrailingIconState
 
 @Composable
 fun ListAppBar(
@@ -222,9 +222,9 @@ fun SearchAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
-    var trailingIconState by remember {
-        mutableStateOf(TrailingIconState.READY_TO_DELETE)
-    }
+//    var trailingIconState by remember {
+//        mutableStateOf(TrailingIconState.READY_TO_DELETE)
+//    }
 
     Surface(
         modifier = Modifier
@@ -269,6 +269,12 @@ fun SearchAppBar(
             trailingIcon = {
                 IconButton(
                     onClick = {
+                        if (text.isNotEmpty()) {
+                            onTextChange("")
+                        } else {
+                            onCloseClicked()
+                        }
+                       /*
                         when (trailingIconState) {
                             TrailingIconState.READY_TO_DELETE -> {
                                 onTextChange("")
@@ -283,6 +289,7 @@ fun SearchAppBar(
                                 }
                             }
                         }
+                    */
                     }
                 ) {
                     Icon(
